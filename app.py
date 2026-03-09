@@ -41,17 +41,29 @@ def init_db():
                      message TEXT, ai_category TEXT, 
                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     
-    # --- Database Migration ---
+    # --- Database Migration สำหรับตาราง tickets ---
     cursor.execute("PRAGMA table_info(tickets)")
-    columns = [column[1] for column in cursor.fetchall()]
+    ticket_columns = [column[1] for column in cursor.fetchall()]
     
-    if 'chat_history' not in columns:
-        print("Migrating: Adding 'chat_history' column...")
+    if 'chat_history' not in ticket_columns:
+        print("Migrating: Adding 'chat_history' column to tickets...")
         cursor.execute("ALTER TABLE tickets ADD COLUMN chat_history TEXT")
     
-    if 'status' not in columns:
-        print("Migrating: Adding 'status' column...")
+    if 'status' not in ticket_columns:
+        print("Migrating: Adding 'status' column to tickets...")
         cursor.execute("ALTER TABLE tickets ADD COLUMN status TEXT DEFAULT 'OPEN'")
+
+    # --- Database Migration สำหรับตาราง products (เพิ่ม Size และ Stock) ---
+    cursor.execute("PRAGMA table_info(products)")
+    prod_columns = [column[1] for column in cursor.fetchall()]
+
+    if 'size' not in prod_columns:
+        print("Migrating: Adding 'size' column to products...")
+        cursor.execute("ALTER TABLE products ADD COLUMN size TEXT")
+    
+    if 'stock_quantity' not in prod_columns:
+        print("Migrating: Adding 'stock_quantity' column to products...")
+        cursor.execute("ALTER TABLE products ADD COLUMN stock_quantity INTEGER DEFAULT 0")
         
     conn.commit()
     conn.close()
@@ -90,6 +102,9 @@ def handle_products():
             price = request.form.get('price')
             category = request.form.get('category')
             description = request.form.get('description')
+            size = request.form.get('size') # รับค่าไซส์จาก Frontend
+            stock_quantity = request.form.get('stock_quantity', 0) # รับจำนวนสินค้า
+            
             image_url = ""
             if 'image' in request.files:
                 file = request.files['image']
@@ -99,8 +114,8 @@ def handle_products():
                     image_url = f"/uploads/{filename}"
             
             conn = get_db_connection()
-            conn.execute("INSERT INTO products (name, price, description, category, image_url) VALUES (?,?,?,?,?)",
-                         (name, price, description, category, image_url))
+            conn.execute("INSERT INTO products (name, price, description, category, image_url, size, stock_quantity) VALUES (?,?,?,?,?,?,?)",
+                         (name, price, description, category, image_url, size, stock_quantity))
             conn.commit()
             conn.close()
             return jsonify({"status": "success"})
@@ -111,6 +126,41 @@ def handle_products():
     prods = conn.execute("SELECT * FROM products").fetchall()
     conn.close()
     return jsonify([dict(p) for p in prods])
+
+# Route สำหรับแก้ไขสินค้า (Update)
+@app.route('/api/products/<int:id>/edit', methods=['POST'])
+def edit_product(id):
+    try:
+        name = request.form.get('name')
+        price = request.form.get('price')
+        category = request.form.get('category')
+        description = request.form.get('description')
+        size = request.form.get('size')
+        stock_quantity = request.form.get('stock_quantity', 0)
+        
+        conn = get_db_connection()
+        
+        # ตรวจสอบว่ามีการอัปโหลดรูปใหม่ไหม
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                filename = f"edit_{id}_{secure_filename(file.filename)}"
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                image_url = f"/uploads/{filename}"
+                conn.execute("UPDATE products SET name=?, price=?, description=?, category=?, image_url=?, size=?, stock_quantity=? WHERE id=?",
+                             (name, price, description, category, image_url, size, stock_quantity, id))
+            else:
+                conn.execute("UPDATE products SET name=?, price=?, description=?, category=?, size=?, stock_quantity=? WHERE id=?",
+                             (name, price, description, category, size, stock_quantity, id))
+        else:
+            conn.execute("UPDATE products SET name=?, price=?, description=?, category=?, size=?, stock_quantity=? WHERE id=?",
+                         (name, price, description, category, size, stock_quantity, id))
+            
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
@@ -145,9 +195,14 @@ def chat_bot():
             return jsonify({"status": "error", "message": str(e)}), 500
 
     conn = get_db_connection()
-    prods = conn.execute("SELECT name, price, description FROM products").fetchall()
+    # ดึงข้อมูลมาทั้งหมดรวมถึงไซส์และสต็อกเพื่อให้ AI ตอบลูกค้าได้ครบถ้วน
+    prods = conn.execute("SELECT name, price, description, category, size, stock_quantity FROM products").fetchall()
     conn.close()
-    knowledge = "สินค้าในร้าน:\n" + "\n".join([f"- {p[0]} ราคา {p[1]} ({p[2]})" for p in prods])
+    
+    knowledge = "ข้อมูลสินค้าในร้าน (Stock Data):\n"
+    for p in prods:
+        knowledge += f"- {p[0]} (หมวด: {p[3]}): ราคา {p[1]} บาท | ไซส์ที่มี: {p[4]} | คงเหลือในคลัง: {p[5]} ชิ้น | รายละเอียด: {p[2]}\n"
+    
     ai_answer = call_llama(user_message, context=knowledge)
     return jsonify({"answer": ai_answer})
 
@@ -168,7 +223,6 @@ def request_support():
         conn.close()
         return jsonify({"status": "success", "ticket_id": new_id})
     except Exception as e:
-        print(f"Error in request_support: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/admin/reply', methods=['POST'])
@@ -220,10 +274,8 @@ def delete_ticket(id):
         conn.close()
         return jsonify({"status": "success"})
     except Exception as e:
-        print(f"Delete Error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# --- เพิ่ม Route สำหรับการปิดแชทโดยลูกค้า ---
 @app.route('/api/tickets/<int:id>/close', methods=['POST'])
 def close_ticket(id):
     try:
@@ -240,18 +292,11 @@ def close_ticket(id):
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# Route สำหรับตรวจสอบข้อมูลดิบ (Debug Only)
-@app.route('/api/debug/db-check')
-def debug_db_check():
-    conn = get_db_connection()
-    tickets = conn.execute("SELECT id, message, ai_category, status FROM tickets").fetchall()
-    conn.close()
-    return jsonify([dict(t) for t in tickets])
-
 @app.route('/api/ai/generate-post', methods=['POST'])
 def ai_generate_post():
     data = request.json
-    prompt = f"เขียนโพสต์ขายของสั้นๆ สำหรับ: {data['name']} ราคา {data['price']} หมวดหมู่: {data['category']} ใส่ emoji"
+    # นำ Size มาใส่ใน Prompt เพื่อให้ AI เขียนโพสต์ที่บอกขนาดด้วย
+    prompt = f"เขียนโพสต์ขายของสั้นๆ สำหรับ: {data['name']} ราคา {data['price']} หมวดหมู่: {data['category']} มีไซส์ให้เลือกดังนี้: {data.get('size', 'N/A')} ใส่ emoji"
     return jsonify({"content": call_llama(prompt)})
 
 if __name__ == '__main__':
