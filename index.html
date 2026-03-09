@@ -3,64 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartStyle AI - Defined Streetwear</title>
+    <title>SmartStyle AI - Streetwear Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;800&family=Inter:wght@900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;800&family=Inter:wght@900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --accent-red: #ff3e3e;
-            --bg-black: #0a0a0a;
-            --card-dark: #121212;
-        }
+        :root { --accent-red: #ff3e3e; --bg-black: #0a0a0a; }
         body { font-family: 'Prompt', sans-serif; background-color: var(--bg-black); color: #ffffff; }
         .serif { font-family: 'Inter', sans-serif; text-transform: uppercase; }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: var(--accent-red); }
 
-        .chat-container { height: 420px; overflow-y: auto; scroll-behavior: smooth; }
+        .chat-container { height: 450px; overflow-y: auto; scroll-behavior: smooth; }
         .message-user { background: var(--accent-red); color: #fff; align-self: flex-end; border-radius: 2px; font-weight: 600; }
         .message-ai { background: #1a1a1a; color: #fff; align-self: flex-start; border-radius: 2px; border: 1px solid #333; }
-        .message-system { color: #555; align-self: center; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; padding: 10px; }
+        .message-admin { background: #2a2a2a; color: #fff; align-self: flex-start; border-radius: 2px; border: 1px solid var(--accent-red); }
+        .message-system { color: #555; align-self: center; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; padding: 10px; border-bottom: 1px solid #222; width: 100%; text-align: center; }
         
-        .size-chip { cursor: pointer; transition: all 0.2s; border: 1px solid #333; padding: 6px 12px; font-size: 11px; font-weight: 800; text-align: center; min-width: 45px; background: transparent; color: #fff; }
-        .size-chip:hover { border-color: var(--accent-red); }
-        .size-chip.active { background-color: var(--accent-red); border-color: var(--accent-red); color: white; }
+        .size-chip { cursor: pointer; border: 1px solid #333; padding: 6px 12px; font-size: 11px; font-weight: 800; background: transparent; color: #fff; transition: all 0.2s; }
+        .size-chip.active { background-color: var(--accent-red); border-color: var(--accent-red); }
         
-        /* Buttons Style from image */
-        .btn-red { background-color: var(--accent-red); color: #fff; padding: 14px 28px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 12px; transition: all 0.3s; }
+        .btn-red { background-color: var(--accent-red); color: #fff; padding: 14px 28px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 12px; transition: all 0.3s; text-align: center; }
         .btn-red:hover { background-color: #ff1a1a; transform: translateY(-2px); }
-        
-        .btn-outline { background-color: transparent; color: #fff; border: 1px solid #fff; padding: 14px 28px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 12px; transition: all 0.3s; }
-        .btn-outline:hover { background-color: #fff; color: #000; }
 
-        /* Card Visuals */
         .product-card { border: 1px solid #1a1a1a; transition: all 0.4s; padding: 10px; background: transparent; }
         .product-card:hover { border: 1px solid #333; background: #0f0f0f; }
         .product-card img { filter: brightness(0.85); transition: all 0.6s ease; object-fit: cover; }
-        .product-card:hover img { filter: brightness(1); transform: scale(1.03); }
         
         .floating-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 4px; display: block; }
-        
-        /* Image Preview Box */
         .img-preview-box { width: 100%; height: 180px; border: 2px dashed #333; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #111; margin-bottom: 10px; }
         .img-preview-box img { width: 100%; height: 100%; object-fit: contain; }
-        .status-badge { background: #1a1a1a; color: var(--accent-red); padding: 2px 8px; border: 1px solid var(--accent-red); font-size: 10px; font-weight: 900; }
 
-        /* Filter Tabs */
         .filter-btn { border: 1px solid #1a1a1a; padding: 10px 24px; text-transform: uppercase; font-weight: 800; font-size: 10px; color: #555; transition: all 0.3s; }
         .filter-btn:hover { border-color: #fff; color: #fff; }
         .filter-btn.active { background-color: var(--accent-red); border-color: var(--accent-red); color: #fff; }
 
-        /* Counter */
         .counter-btn { width: 32px; height: 32px; border: 1px solid #1a1a1a; display: flex; items-center; justify-content: center; font-weight: 900; color: #000; }
-        .counter-btn:hover { background: #000; color: #fff; }
+        
+        .ai-loading { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* Chat Product Link Component */
+        .chat-product-link { border: 1px solid #333; background: #222; transition: all 0.3s; border-radius: 4px; }
+        .chat-product-link:hover { border-color: var(--accent-red); background: #2a2a2a; transform: translateY(-2px); }
     </style>
 </head>
 <body class="antialiased">
@@ -70,7 +57,7 @@
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center h-20">
             <div class="flex items-center gap-12">
                 <div class="cursor-pointer" onclick="navigateTo('home')">
-                    <span class="serif text-2xl font-black tracking-tighter">SMART<span class="text-red-600">&</span>STYLE AI</span>
+                    <span class="serif text-2xl font-black tracking-tighter uppercase">SmartStyle<span class="text-red-600">AI</span></span>
                 </div>
                 <div class="hidden md:flex gap-10 text-[11px] font-black uppercase tracking-widest text-zinc-400">
                     <button onclick="navigateTo('home')" class="hover:text-white transition-colors">หน้าหลัก</button>
@@ -88,51 +75,57 @@
 
     <main class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- HOME VIEW -->
+        <!-- HOME / STYLIST VIEW -->
         <div id="home" class="tab-content active space-y-32">
-            <section class="relative h-[600px] flex items-center justify-center text-center overflow-hidden border border-zinc-800">
+            <!-- Hero Section -->
+            <section class="relative h-[500px] flex items-center justify-center text-center overflow-hidden border border-zinc-800">
                 <div class="absolute inset-0 z-0">
-                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1600" class="w-full h-full object-cover opacity-40 grayscale">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1600" class="w-full h-full object-cover opacity-30 grayscale">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black"></div>
                 </div>
                 <div class="relative z-10 space-y-8 px-6">
-                    <span class="bg-red-600 text-white px-3 py-1 text-[10px] font-black uppercase tracking-widest">Selected Archive 2026</span>
-                    <h1 class="text-6xl md:text-8xl font-black leading-none uppercase tracking-tighter text-white">
-                        Define Your<br><span class="text-red-600">Smart Style</span>
+                    <h1 class="text-6xl md:text-8xl font-black uppercase tracking-tighter text-white">
+                        The AI<br><span class="text-red-600">Stylist</span>
                     </h1>
-                    <p class="text-zinc-400 max-w-xl mx-auto text-sm leading-relaxed font-bold uppercase tracking-widest">
-                        Premium streetwear designed for the bold. Express yourself with our exclusive curated collection.
-                    </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="navigateTo('products')" class="btn-red">Shop Collection</button>
-                        <button onclick="document.getElementById('assistant-section').scrollIntoView({behavior:'smooth'})" class="btn-outline">AI Assistant</button>
+                        <button onclick="showChatSelection()" class="btn-red">Get Styled Now</button>
+                        <button onclick="navigateTo('products')" class="border border-white text-white px-10 py-4 font-black text-xs uppercase hover:bg-white hover:text-black">Store Archive</button>
                     </div>
                 </div>
             </section>
 
-            <section id="assistant-section" class="border-t border-zinc-800 pt-32 max-w-4xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-5xl font-black uppercase italic tracking-tighter text-white">Smart <span class="text-red-600">Support</span></h2>
-                    <p class="text-[10px] uppercase tracking-[0.5em] text-zinc-500 mt-2 font-bold">Protocol established via Llama3</p>
+            <!-- Mode Selection Modal -->
+            <div id="chat-mode-selection" class="hidden max-w-2xl mx-auto pt-12 text-center">
+                <h3 class="text-xl font-black uppercase mb-8">Choose Your Protocol</h3>
+                <div class="grid grid-cols-2 gap-6 text-white">
+                    <div onclick="initChatSession('ai')" class="border border-zinc-800 p-8 bg-zinc-900 cursor-pointer hover:border-red-600 transition-all">
+                        <i class="fa-solid fa-robot text-3xl mb-3 text-red-600"></i>
+                        <h4 class="font-black uppercase text-xs">AI Stylist</h4>
+                    </div>
+                    <div onclick="initChatSession('human')" class="border border-zinc-800 p-8 bg-zinc-900 cursor-pointer hover:border-red-600 transition-all">
+                        <i class="fa-solid fa-headset text-3xl mb-3 text-red-600"></i>
+                        <h4 class="font-black uppercase text-xs">Live Staff</h4>
+                    </div>
                 </div>
-                <div class="bg-zinc-900 border border-zinc-800 p-8 shadow-2xl">
-                    <div class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
-                        <div class="flex items-center gap-3">
-                            <span id="chat-title" class="text-[11px] font-black uppercase tracking-widest text-white"><i class="fa-solid fa-robot mr-2 text-red-600"></i> AI Curator Protocol</span>
+            </div>
+
+            <!-- Chat Area -->
+            <section id="stylist-section" class="max-w-4xl mx-auto hidden pt-12">
+                <div class="bg-zinc-900 border border-zinc-800 p-8 shadow-xl">
+                    <div class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4 text-white">
+                        <div class="flex flex-col">
+                            <span id="chat-status-label" class="text-[10px] font-black uppercase tracking-widest text-red-600">Protocol: Active</span>
+                            <span id="chat-mode-indicator" class="text-[8px] font-bold text-zinc-500 uppercase">Mode: Initializing...</span>
                         </div>
                         <div class="flex gap-4">
-                            <button id="human-btn" onclick="requestHuman()" class="text-[9px] font-black uppercase border-b border-red-600 text-red-600 pb-1">Call Staff</button>
-                            <button id="exit-human-btn" onclick="exitHumanMode()" class="hidden text-[9px] font-black uppercase text-zinc-500 hover:text-white">Back to AI</button>
+                            <button id="switch-mode-btn" onclick="switchProtocolMode()" class="text-[9px] font-black uppercase bg-white text-black px-4 py-1 hover:bg-red-600 hover:text-white transition-all">Switch Mode</button>
+                            <button onclick="resetSessionUI()" class="text-[9px] font-black uppercase text-zinc-500 hover:text-white transition-colors">Exit Session</button>
                         </div>
                     </div>
-                    <div id="chat-history" class="chat-container flex flex-col gap-6 mb-8 pr-4">
-                        <div class="message-ai p-5 text-sm max-w-[85%] leading-relaxed">Welcome to the SmartStyle archive. How can I assist your selection?</div>
-                    </div>
+                    <div id="chat-history" class="chat-container flex flex-col gap-5 mb-8 pr-4"></div>
                     <div class="flex gap-4 border-t border-zinc-800 pt-6">
-                        <input id="chat-input" type="text" placeholder="QUERY THE ARCHIVE..." class="flex-1 bg-transparent py-3 outline-none text-xs font-black placeholder:text-zinc-700 uppercase tracking-widest text-white">
-                        <button onclick="sendMessage()" id="send-btn" class="text-red-600 hover:text-white transition-colors">
-                            <i class="fa-solid fa-arrow-right-long text-2xl"></i>
-                        </button>
+                        <input id="chat-input" type="text" placeholder="TYPE MESSAGE..." class="flex-1 bg-transparent py-3 outline-none text-xs font-black text-white uppercase tracking-widest">
+                        <button onclick="sendMessage()" id="send-btn" class="text-red-600 hover:scale-110"><i class="fa-solid fa-paper-plane text-xl"></i></button>
                     </div>
                 </div>
             </section>
@@ -140,85 +133,80 @@
 
         <!-- PRODUCTS VIEW -->
         <div id="products" class="tab-content space-y-16">
-            <div class="text-center space-y-6 text-white">
-                <h2 class="text-6xl font-black uppercase tracking-tighter">Latest <span class="text-red-600">Drops</span></h2>
-                <p class="text-zinc-500 uppercase tracking-widest text-[10px] font-bold">Curated artifacts to elevate your urban identity.</p>
-                
-                <!-- Dynamic Category Filter -->
+            <div class="text-center space-y-6">
+                <h2 class="text-6xl font-black uppercase tracking-tighter text-white">Collections</h2>
                 <div id="category-filter-list" class="flex flex-wrap justify-center gap-2 pt-6">
                     <button onclick="filterProducts('all')" class="filter-btn active" id="btn-filter-all">All Items</button>
                 </div>
             </div>
-
-            <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pt-8"></div>
+            <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
         </div>
 
         <!-- CART VIEW -->
-        <div id="cart" class="tab-content max-w-4xl mx-auto py-12 space-y-12">
-            <div class="text-center">
-                <h2 class="text-5xl font-black tracking-tighter uppercase italic text-white">Current Bag</h2>
-                <p id="cart-empty-msg" class="text-zinc-600 uppercase tracking-widest text-[10px] mt-4 hidden">Bag empty. Discover something new.</p>
-            </div>
+        <div id="cart" class="tab-content max-w-4xl mx-auto py-12 space-y-12 text-white">
+            <h2 class="text-5xl font-black uppercase italic text-center">Shopping Bag</h2>
             <div id="cart-items-list" class="space-y-4"></div>
-            <div id="cart-summary" class="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-8 hidden">
+            <div id="cart-summary" class="border-t border-zinc-800 pt-8 flex justify-between items-center hidden">
                 <div class="text-left text-white">
-                    <span class="floating-label">Total Selection Value</span>
-                    <div class="text-4xl font-black tracking-tighter">฿<span id="cart-total">0</span></div>
+                    <span class="floating-label">Total</span>
+                    <div class="text-4xl font-black">฿<span id="cart-total">0</span></div>
                 </div>
-                <button class="btn-red px-16 py-5 shadow-xl">Complete Transfer</button>
+                <button class="btn-red">Secure Checkout</button>
             </div>
         </div>
 
-        <!-- ADMIN VIEW (Secret Path #/admin) -->
-        <div id="admin" class="tab-content space-y-16">
-            <div class="flex justify-between items-center border-b border-zinc-800 pb-8 text-white">
-                <div class="flex items-center gap-4">
-                    <h2 class="text-3xl font-black uppercase tracking-tighter">Console</h2>
-                    <span class="status-badge">AUTHORIZED STAFF ONLY</span>
-                </div>
-                <button onclick="loadProducts()" class="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 text-[10px] font-black uppercase hover:border-red-600"><i class="fa-solid fa-sync mr-2"></i> Sync Cloud</button>
+        <!-- ADMIN VIEW -->
+        <div id="admin" class="tab-content space-y-16 text-white">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-8 uppercase">
+                <h2 class="text-3xl font-black italic tracking-tighter">Command Center</h2>
+                <button onclick="loadProducts()" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-2 text-[10px] font-black uppercase hover:bg-zinc-800 transition-all">Refresh Database</button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                <div class="lg:col-span-3 space-y-6">
-                    <h3 class="floating-label">Incoming Tickets</h3>
-                    <div id="ticket-list" class="space-y-2 max-h-[700px] overflow-y-auto pr-2"></div>
+                <div class="lg:col-span-3 space-y-6 text-white text-zinc-500">
+                    <h3 class="floating-label">Active Inbox</h3>
+                    <div id="ticket-list" class="space-y-2"></div>
                 </div>
 
-                <div class="lg:col-span-6 space-y-12 text-white">
+                <div class="lg:col-span-6 space-y-10">
+                    <!-- Admin Chat Window -->
                     <div class="border border-zinc-800 bg-zinc-900 flex flex-col h-[500px]">
-                        <div id="admin-chat-header" class="p-4 border-b border-zinc-800 font-black uppercase text-[10px] flex justify-between bg-black">
-                            <span>Protocol Stream</span>
-                            <span id="active-ticket-status" class="text-zinc-600 font-bold italic">Standby</span>
-                        </div>
-                        <div id="admin-chat-history" class="flex-1 p-6 flex flex-col gap-5 overflow-y-auto text-sm"></div>
+                        <div id="admin-chat-header" class="p-4 border-b border-zinc-800 font-black uppercase text-[10px] bg-black text-white text-center">Select Case Log</div>
+                        <div id="admin-chat-history" class="flex-1 p-6 flex flex-col gap-4 overflow-y-auto text-sm text-white"></div>
                         <div id="admin-chat-footer" class="p-4 border-t border-zinc-800 hidden bg-black">
                             <div class="flex gap-4">
-                                <input id="admin-reply-input" type="text" placeholder="Respond..." class="flex-1 bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
-                                <button onclick="sendAdminReply()" class="text-red-600 font-black uppercase text-[11px]">Send</button>
+                                <input id="admin-reply-input" type="text" placeholder="Respond to protocol..." class="flex-1 bg-transparent border-b border-zinc-700 outline-none text-sm text-white font-bold">
+                                <button onclick="sendAdminReply()" class="text-red-600 font-black uppercase text-xs hover:text-white transition-colors">Dispatch</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="border border-zinc-800 p-10 space-y-8 bg-zinc-900">
-                        <div class="flex justify-between items-center border-b border-zinc-800 pb-4 text-white">
-                            <h4 id="form-title" class="text-2xl font-black uppercase italic">Artifact Entry</h4>
+                    <!-- Manage Product Form -->
+                    <div id="admin-product-form" class="border border-zinc-800 p-10 bg-zinc-900 text-white">
+                        <div class="flex justify-between items-center border-b border-zinc-800 pb-4 mb-8 italic">
+                            <h4 id="form-title" class="text-xl font-black uppercase">Artifact Entry</h4>
                             <span id="edit-indicator" class="hidden bg-red-600 text-white text-[8px] font-black px-2 py-1 uppercase">Modify Protocol</span>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-1">
-                                <label class="floating-label">Item Name</label>
-                                <input id="p-name" type="text" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
+                                <label class="floating-label">Product Name</label>
+                                <input id="p-name" type="text" placeholder="TITLE" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
                             </div>
                             <div class="space-y-1">
-                                <label class="floating-label">Market Value (THB)</label>
-                                <input id="p-price" type="number" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
+                                <label class="floating-label">Value (THB)</label>
+                                <input id="p-price" type="number" placeholder="PRICE" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
                             </div>
-                            
-                            <div class="col-span-2 space-y-3">
-                                <label class="floating-label">Size Grid</label>
-                                <div id="p-size-container" class="flex flex-wrap gap-2">
+                            <div class="space-y-1">
+                                <label class="floating-label">Style Tags</label>
+                                <input id="p-tags" type="text" placeholder="STREET, MINIMAL..." class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="floating-label">Occasion</label>
+                                <input id="p-occasion" type="text" placeholder="CASUAL, PARTY..." class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
+                            </div>
+                            <div class="col-span-2 space-y-2">
+                                <label class="floating-label">Sizing Grid</label>
+                                <div id="p-size-container" class="flex flex-wrap gap-2 text-white">
                                     <div class="size-chip" data-size="XS" onclick="toggleSizeChip(this)">XS</div>
                                     <div class="size-chip" data-size="S" onclick="toggleSizeChip(this)">S</div>
                                     <div class="size-chip" data-size="M" onclick="toggleSizeChip(this)">M</div>
@@ -228,14 +216,13 @@
                                     <div class="size-chip" data-size="Free Size" onclick="toggleSizeChip(this)">Free</div>
                                 </div>
                             </div>
-
                             <div class="space-y-1">
-                                <label class="floating-label">Stock Units</label>
-                                <input id="p-stock" type="number" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
+                                <label class="floating-label">Inventory Count</label>
+                                <input id="p-stock" type="number" placeholder="QTY" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
                             </div>
                             <div class="space-y-1">
-                                <label class="floating-label">Asset Category</label>
-                                <select id="p-cat" class="w-full bg-zinc-900 border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white cursor-pointer">
+                                <label class="floating-label">Artifact Class</label>
+                                <select id="p-cat" class="w-full bg-zinc-900 border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
                                     <option value="T-Shirt">T-Shirt</option>
                                     <option value="Hoodie">Hoodie</option>
                                     <option value="Jacket">Jacket</option>
@@ -243,119 +230,113 @@
                                     <option value="Sport">Sport</option>
                                 </select>
                             </div>
-                            
                             <div class="col-span-2 space-y-3">
                                 <label class="floating-label">Visual Asset</label>
-                                <div id="p-preview-container" class="hidden mb-4">
-                                    <div class="img-preview-box">
-                                        <img id="p-preview-img" src="" alt="Artifact">
-                                    </div>
-                                    <p id="p-filename" class="text-[9px] font-black text-red-500 uppercase"></p>
+                                <div id="p-preview-container" class="hidden animate-in fade-in duration-300">
+                                    <div class="img-preview-box"><img id="p-preview-img" src="" alt="Artifact"></div>
                                 </div>
                                 <div class="border border-dashed border-zinc-700 p-6 text-center hover:bg-black transition-all relative cursor-pointer group">
                                     <input id="p-img" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleImagePreview(this)">
                                     <i class="fa-solid fa-camera text-xl mb-2 text-zinc-600 group-hover:text-red-600"></i>
-                                    <p class="text-[9px] font-black uppercase text-zinc-500">Commit Image Asset</p>
+                                    <p class="text-[9px] font-black uppercase text-zinc-500">Capture Visual Asset</p>
                                 </div>
                             </div>
-                            
                             <div class="col-span-2 space-y-1">
-                                <label class="floating-label">Context / Specs</label>
-                                <textarea id="p-desc" class="w-full bg-zinc-800 border border-zinc-700 p-4 outline-none font-medium text-sm h-32 text-white"></textarea>
+                                <label class="floating-label">Specifications / Details</label>
+                                <textarea id="p-desc" placeholder="SPECIFICATIONS" class="w-full bg-zinc-800 border border-zinc-700 p-4 h-32 outline-none font-medium text-sm focus:border-red-600 transition-colors text-white"></textarea>
                             </div>
                         </div>
-                        
-                        <div class="flex flex-col gap-4 pt-4 text-white">
-                            <button id="submit-btn" onclick="addProduct()" class="btn-red w-full py-5">Confirm Archive Sync</button>
-                            <button id="cancel-edit-btn" onclick="resetProductForm()" class="hidden text-[10px] font-black uppercase text-zinc-500 hover:text-white self-center">Cancel Modify</button>
-                            <button onclick="askAIForPost()" class="btn-ai-action mt-4 self-end"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Draft Content</button>
+                        <div class="flex flex-col gap-4 mt-8">
+                            <button id="submit-btn" onclick="addProduct()" class="btn-red w-full uppercase">Commit Entry</button>
+                            <button id="cancel-edit-btn" onclick="resetProductForm()" class="hidden text-[10px] font-black uppercase text-zinc-500 hover:text-white self-center transition-colors">Discard Modify</button>
+                            
+                            <div class="pt-4 border-t border-zinc-800 flex justify-end">
+                                <button onclick="askAIForPost()" class="text-red-600 font-black uppercase text-[10px] hover:underline flex items-center gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Draft AI Social Post
+                                </button>
+                            </div>
                         </div>
-
-                        <div id="ai-post-result" class="hidden mt-6 bg-black border border-zinc-800 p-6 relative text-white">
-                            <div class="absolute -top-3 left-4 bg-red-600 text-white px-2 py-0.5 text-[8px] font-black uppercase">AI Protocol Output</div>
-                            <textarea id="ai-text" class="w-full bg-transparent text-[11px] font-bold h-32 outline-none leading-loose text-zinc-300"></textarea>
-                            <div class="mt-4 flex gap-6">
-                                <button onclick="copyAIText()" class="text-[10px] font-black uppercase text-red-600">Copy</button>
-                                <button onclick="useAsDescription()" class="text-[10px] font-black uppercase text-zinc-500">Apply</button>
+                        <div id="ai-post-result" class="hidden mt-6 bg-black border border-zinc-800 p-6 relative">
+                            <div class="absolute -top-3 left-4 bg-red-600 text-white px-2 py-0.5 text-[8px] font-black uppercase">AI Selection Draft</div>
+                            <textarea id="ai-text" class="w-full bg-transparent text-[11px] font-bold h-32 outline-none leading-loose text-zinc-300 italic"></textarea>
+                            <div class="mt-4 flex gap-4 text-white">
+                                <button onclick="copyAIText()" class="text-[10px] font-black uppercase text-red-600 hover:text-white">Copy Protocol</button>
+                                <button onclick="useAsDescription()" class="text-[10px] font-black uppercase text-zinc-500 hover:text-white">Apply to Specs</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-3 space-y-6">
-                    <h3 class="floating-label text-white">Database</h3>
-                    <div id="admin-product-list" class="space-y-2 max-h-[800px] overflow-y-auto pr-2 text-white"></div>
+                <div class="lg:col-span-3 space-y-6 text-white text-zinc-500">
+                    <h3 class="floating-label">Current Database</h3>
+                    <div id="admin-product-list" class="space-y-3 max-h-[1000px] overflow-y-auto pr-2"></div>
                 </div>
             </div>
         </div>
-
     </main>
 
-    <!-- Product Detail Modal -->
-    <div id="product-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-xl transition-all">
-        <div class="bg-white w-full max-w-4xl rounded-none shadow-2xl flex flex-col md:flex-row relative overflow-hidden">
-            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-xs hover:bg-black hover:text-white transition-all z-50 bg-white w-6 h-6 flex items-center justify-center border border-zinc-200 text-black">
+    <!-- Product Modal (Readable White) -->
+    <div id="product-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-xl transition-all text-black">
+        <div class="bg-white w-full max-w-4xl rounded-none shadow-2xl flex flex-col md:flex-row relative overflow-hidden animate-in zoom-in duration-300">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-[10px] bg-white w-6 h-6 flex items-center justify-center border border-zinc-200 hover:bg-black hover:text-white transition-all">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            
             <div class="md:w-1/2 bg-zinc-100 h-[400px] md:h-auto overflow-hidden">
                 <img id="modal-img" src="" class="w-full h-full object-cover">
             </div>
-            
-            <div class="md:w-1/2 p-10 md:p-12 flex flex-col justify-between bg-white text-black min-h-[500px]">
+            <div class="md:w-1/2 p-10 flex flex-col justify-between min-h-[450px] text-black">
                 <div class="space-y-6">
                     <div class="flex justify-between items-center mb-2">
-                        <span id="modal-cat" class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-300">Catalog Piece</span>
-                        <span id="modal-stock-badge" class="text-[8px] font-black bg-zinc-100 text-zinc-800 px-3 py-1 uppercase tracking-tighter">AUTHENTIC</span>
+                        <span id="modal-cat" class="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Archive Asset</span>
+                        <span id="modal-stock-badge" class="text-[8px] font-black bg-zinc-100 text-zinc-800 px-3 py-1 uppercase tracking-tighter border border-zinc-200">AUTHENTIC</span>
                     </div>
                     
                     <div class="space-y-1">
-                        <h2 id="modal-name" class="text-4xl md:text-5xl font-black leading-none uppercase tracking-tighter">Product</h2>
-                        <div class="text-3xl font-light py-2">฿<span id="modal-price" class="font-bold">0</span></div>
+                        <h2 id="modal-name" class="text-3xl font-black leading-none uppercase tracking-tighter">Product</h2>
+                        <div class="text-2xl font-bold py-2">฿<span id="modal-price">0</span></div>
                     </div>
                     
                     <button onclick="closeProductModal()" class="text-[9px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left-long"></i> BACK TO STORE
+                        <i class="fa-solid fa-arrow-left-long"></i> BACK TO COLLECTION
                     </button>
 
-                    <div class="space-y-8 pt-6">
-                        <div class="space-y-3">
-                            <span class="floating-label text-zinc-400">Available Smart Sizes</span>
+                    <div class="space-y-6 pt-6">
+                        <div class="space-y-2">
+                            <span class="floating-label text-zinc-300">Sizes Available</span>
                             <div id="modal-size-list" class="flex flex-wrap gap-2"></div>
-                            <p id="modal-size-error" class="text-[9px] text-red-600 font-bold hidden">* SELECTION REQUIRED</p>
+                            <p id="modal-size-error" class="text-[8px] text-red-600 font-bold hidden">* SELECTION REQUIRED</p>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-8">
-                            <div class="space-y-3">
-                                <span class="floating-label text-zinc-400">Set Quantity</span>
-                                <div class="flex items-center gap-4">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <span class="floating-label text-zinc-300">Quantity</span>
+                                <div class="flex items-center gap-3">
                                     <button onclick="changeModalQty(-1)" class="counter-btn border-zinc-200 text-black">-</button>
-                                    <span id="modal-qty" class="text-lg font-black w-6 text-center">1</span>
+                                    <span id="modal-qty" class="text-sm font-black w-4 text-center">1</span>
                                     <button onclick="changeModalQty(1)" class="counter-btn border-zinc-200 text-black">+</button>
                                 </div>
                             </div>
-                            <div class="space-y-2 border-l border-zinc-100 pl-6">
-                                <span class="floating-label text-zinc-400">Inventory</span>
-                                <span id="modal-stock" class="text-lg font-black uppercase">0 Units</span>
+                            <div class="space-y-1 border-l border-zinc-100 pl-4">
+                                <span class="floating-label text-zinc-300">Stock Status</span>
+                                <span id="modal-stock" class="block text-sm font-black uppercase">0 Units</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="pt-6 border-t border-zinc-100 overflow-y-auto max-h-32">
-                        <span class="floating-label text-zinc-300">Specs & Context</span>
-                        <p id="modal-desc" class="text-zinc-500 text-xs font-medium leading-relaxed"></p>
+                    <div class="pt-4 border-t border-zinc-100 overflow-y-auto max-h-24">
+                        <span class="floating-label text-zinc-200">Specifications</span>
+                        <p id="modal-desc" class="text-zinc-500 text-[11px] font-medium leading-relaxed"></p>
                     </div>
                 </div>
-
-                <button id="modal-add-btn" class="bg-black text-white w-full py-5 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-red-600 mt-8">
-                    Add To Bag
+                <button id="modal-add-btn" class="bg-black text-white w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-600 transition-all mt-6 shadow-xl">
+                    Add To Shopping Bag
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="max-w-7xl mx-auto px-6 py-24 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-start gap-16 text-zinc-500">
+    <footer class="max-w-7xl mx-auto px-6 py-24 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-start gap-16 text-zinc-500 text-white">
         <div class="space-y-6 max-w-xs">
             <span class="serif text-2xl font-black text-white uppercase">SmartStyle<span class="text-red-600">AI</span></span>
             <p class="text-[11px] uppercase tracking-widest leading-loose font-bold">
@@ -366,9 +347,14 @@
                 <a href="#" class="hover:text-red-600 transition-colors"><i class="fa-brands fa-facebook"></i></a>
             </div>
         </div>
-        <div class="flex gap-20 text-zinc-400">
-            <div class="space-y-6 text-white font-black uppercase text-[11px]">
-                <h4 class="border-b border-zinc-800 pb-2">Support</h4>
+        <div class="flex gap-20 font-black uppercase text-[10px] text-white">
+            <div class="space-y-6">
+                <h4 class="border-b border-zinc-800 pb-2 text-white">Archive</h4>
+                <a href="#" class="block hover:text-red-600">New Drops</a>
+                <a href="#" class="block hover:text-red-600">Limited Sets</a>
+            </div>
+            <div class="space-y-6">
+                <h4 class="border-b border-zinc-800 pb-2 text-white">Support</h4>
                 <a href="#" class="block hover:text-red-600">Shipping</a>
                 <a href="#" class="block hover:text-red-600">Returns</a>
             </div>
@@ -376,495 +362,394 @@
     </footer>
 
     <script>
-        let products = [];
-        let cart = [];
-        let currentTicketId = null; 
-        let adminActiveTicketId = null; 
-        let editingProductId = null; 
-        let selectedSizes = []; 
-        let currentFilter = 'all';
-        
-        // Modal State
-        let currentModalProductId = null;
-        let selectedModalSize = null;
-        let selectedModalQty = 1;
+        let products = []; let cart = []; let currentTicketId = null; let adminActiveTicketId = null;
+        let editingProductId = null; let selectedSizes = []; let currentFilter = 'all';
+        let currentModalProductId = null; let selectedModalSize = null; let selectedModalQty = 1;
+        let isWaitingAI = false;
+        let currentProtocolMode = 'ai';
 
         async function init() {
-            await loadProducts();
-            await loadTickets();
-            setInterval(() => {
-                if (currentTicketId) syncCustomerChat();
-                if (adminActiveTicketId) syncAdminChat();
-            }, 3000);
-            window.onhashchange = () => handleRoute();
-            handleRoute();
+            await loadProducts(); await loadTickets();
+            setInterval(() => { 
+                if (currentTicketId) syncCustomerChat(); 
+                loadTickets(); // Polling สำหรับ Inbox ของแอดมิน
+                if (adminActiveTicketId) syncAdminChat(); 
+            }, 4000);
+            window.onhashchange = handleRoute; handleRoute();
         }
 
         function handleRoute() {
-            const hash = window.location.hash;
-            if (hash === '#/admin') showTab('admin');
-            else if (hash === '#/products') showTab('products');
-            else if (hash === '#/cart') { showTab('cart'); renderCart(); }
-            else showTab('home');
+            const h = window.location.hash;
+            if (h === '#/admin') showTab('admin'); else if (h === '#/products') showTab('products');
+            else if (h === '#/cart') { showTab('cart'); renderCart(); } else showTab('home');
         }
 
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active');
-            window.scrollTo({top:0, behavior:'smooth'});
+            const target = document.getElementById(id); if(target) target.classList.add('active'); window.scrollTo({top:0});
         }
 
-        function navigateTo(tab) {
-            if(tab === 'home') window.location.hash = '';
-            else window.location.hash = '#/' + tab;
-        }
+        function navigateTo(tab) { if(tab === 'home') window.location.hash = ''; else window.location.hash = '#/' + tab; }
 
-        async function loadProducts() {
-            try {
-                const res = await fetch('/api/products');
-                products = await res.json();
-                generateCategoryButtons();
-                renderFilteredProducts();
-                renderAdminProducts();
-            } catch(e) { console.error(e); }
-        }
+        function showChatSelection() { document.getElementById('chat-mode-selection').classList.remove('hidden'); document.getElementById('chat-mode-selection').scrollIntoView({behavior:'smooth'}); }
 
-        // --- Category Logic ---
-        function generateCategoryButtons() {
-            const container = document.getElementById('category-filter-list');
-            // เริ่มจาก All
-            container.innerHTML = `<button onclick="filterProducts('all')" class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" id="btn-filter-all">All Items</button>`;
-            
-            // ดึงหมวดหมู่ที่ไม่ซ้ำจากข้อมูลสินค้าใน Backend
-            const uniqueCategories = [...new Set(products.map(p => p.category))];
-            
-            uniqueCategories.forEach(cat => {
-                if(!cat) return;
-                const btn = document.createElement('button');
-                btn.className = `filter-btn ${currentFilter === cat ? 'active' : ''}`;
-                btn.textContent = cat;
-                btn.onclick = () => filterProducts(cat);
-                container.appendChild(btn);
+        async function initChatSession(mode) {
+            currentProtocolMode = mode;
+            document.getElementById('chat-mode-selection').classList.add('hidden');
+            document.getElementById('stylist-section').classList.remove('hidden');
+            document.getElementById('stylist-section').scrollIntoView({behavior:'smooth'});
+            updateChatHeaderUI(mode);
+
+            const res = await fetch('/api/support', { 
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ mode: mode, message: mode === 'ai' ? "เริ่มการสนทนา AI Stylist" : "ต้องการคุยกับพนักงาน" })
             });
-        }
-
-        function filterProducts(category) {
-            currentFilter = category;
-            
-            // อัปเดตปุ่ม Active
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.textContent.toLowerCase() === category.toLowerCase() || (category === 'all' && btn.id === 'btn-filter-all')) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            renderFilteredProducts();
-        }
-
-        function renderFilteredProducts() {
-            const container = document.getElementById('product-list');
-            const displayList = currentFilter === 'all' 
-                ? products 
-                : products.filter(p => p.category.toLowerCase() === currentFilter.toLowerCase());
-
-            container.innerHTML = displayList.map(p => `
-                <div onclick="viewProductDetail(${p.id})" class="product-card group cursor-pointer space-y-4">
-                    <div class="relative overflow-hidden aspect-[3/4] bg-zinc-900 border border-zinc-800">
-                        <img src="${p.image_url}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x533?text=Artifact'">
-                        ${p.stock_quantity <= 0 ? '<div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] font-black px-3 py-1 uppercase tracking-tighter">SOLD</div>' : ''}
-                    </div>
-                    <div class="space-y-1">
-                        <h4 class="font-black text-sm uppercase tracking-tight truncate text-white">${p.name}</h4>
-                        <div class="flex justify-between items-baseline text-white">
-                            <span class="text-sm font-black text-red-600">฿${p.price.toLocaleString()}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1 pt-2 opacity-50">
-                            ${(p.size || '').split(',').map(s => `<span class="text-[8px] border border-zinc-700 px-1 font-black text-zinc-400 uppercase">${s.trim()}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            `).join('') || '<p class="text-zinc-600 uppercase text-center col-span-full py-20 font-black">No Drops in this archive.</p>';
-        }
-
-        async function loadTickets() {
-            try {
-                const res = await fetch('/api/tickets');
-                const tickets = await res.json();
-                const container = document.getElementById('ticket-list');
-                container.innerHTML = tickets.map(t => {
-                    const isLive = t.ai_category === 'HUMAN_REQUIRED';
-                    return `
-                    <div onclick="openAdminChat(${t.id})" class="p-5 border border-zinc-800 cursor-pointer hover:bg-zinc-900 transition-all ${adminActiveTicketId == t.id ? 'bg-red-600 border-red-600 text-white' : 'bg-transparent text-zinc-400'} group relative">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] font-black uppercase tracking-widest">LOG: ${t.id}</span>
-                            ${isLive ? '<span class="bg-black text-white px-2 py-0.5 text-[7px] font-black">ACTIVE</span>' : ''}
-                        </div>
-                        <p class="text-[11px] font-bold truncate">${t.message}</p>
-                        <button onclick="event.stopPropagation(); deleteTicket(${t.id})" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-xmark text-[10px]"></i></button>
-                    </div>
-                `}).join('');
-            } catch(e) { console.error(e); }
-        }
-
-        async function deleteTicket(id) {
-            if(!confirm(`TERMINATE LOG #${id}?`)) return;
-            await fetch(`/api/tickets/${id}`, { method: 'DELETE' });
-            if (adminActiveTicketId == id) closeAdminChat();
-            loadTickets();
-        }
-
-        function closeAdminChat() {
-            adminActiveTicketId = null;
-            document.getElementById('admin-chat-footer').classList.add('hidden');
-            document.getElementById('admin-chat-history').innerHTML = '';
-            document.getElementById('admin-chat-header').innerHTML = `<span>Protocol Stream</span> <span class="text-zinc-600">Idle</span>`;
-        }
-
-        function renderAdminProducts() {
-            const container = document.getElementById('admin-product-list');
-            container.innerHTML = products.map(p => `
-                <div class="p-5 border border-zinc-800 bg-black text-white hover:border-zinc-500 transition group">
-                    <div class="flex justify-between items-center">
-                        <div class="space-y-1">
-                            <h5 class="text-[12px] font-black uppercase tracking-tight">${p.name}</h5>
-                            <p class="text-[9px] text-zinc-500 font-bold">Qty: <span class="${p.stock_quantity < 5 ? 'text-red-600' : 'text-zinc-300'} font-black">${p.stock_quantity}</span></p>
-                        </div>
-                        <div class="flex gap-4">
-                            <button onclick="startEdit(${p.id})" class="text-[10px] font-black uppercase text-red-600 border-b border-red-600">Modify</button>
-                            <button onclick="deleteProduct(${p.id})" class="text-[10px] font-black uppercase text-zinc-600">Del</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- Core Logics ---
-        function toggleSizeChip(el) {
-            const size = el.dataset.size;
-            if (selectedSizes.includes(size)) {
-                selectedSizes = selectedSizes.filter(s => s !== size);
-                el.classList.remove('active');
-            } else {
-                selectedSizes.push(size);
-                el.classList.add('active');
-            }
-        }
-
-        function handleImagePreview(input) {
-            const container = document.getElementById('p-preview-container');
-            const img = document.getElementById('p-preview-img');
-            const name = document.getElementById('p-filename');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    img.src = e.target.result;
-                    container.classList.remove('hidden');
-                    name.textContent = "ARTIFACT READY: " + input.files[0].name;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        async function addProduct() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const category = document.getElementById('p-cat').value;
-            const stock = document.getElementById('p-stock').value;
-            const desc = document.getElementById('p-desc').value;
-            const imageFile = document.getElementById('p-img').files[0];
-            if(!name || !price || selectedSizes.length === 0 || !stock) return alert("Archive synchronization error: Mandatory fields missing.");
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('price', price);
-            formData.append('category', category);
-            formData.append('size', selectedSizes.join(', '));
-            formData.append('stock_quantity', stock);
-            formData.append('description', desc);
-            if(imageFile) formData.append('image', imageFile);
-            
-            const url = editingProductId ? `/api/products/${editingProductId}/edit` : '/api/products';
-            const res = await fetch(url, { method: 'POST', body: formData });
-            if(res.ok) { resetProductForm(); loadProducts(); alert("Archive synchronized."); }
-        }
-
-        function startEdit(id) {
-            const p = products.find(x => x.id === id);
-            if(!p) return;
-            editingProductId = id;
-            document.getElementById('form-title').textContent = 'Modify Artifact';
-            document.getElementById('edit-indicator').classList.remove('hidden');
-            document.getElementById('p-name').value = p.name;
-            document.getElementById('p-price').value = p.price;
-            document.getElementById('p-cat').value = p.category;
-            document.getElementById('p-stock').value = p.stock_quantity;
-            document.getElementById('p-desc').value = p.description || '';
-            selectedSizes = p.size ? p.size.split(',').map(s => s.trim()) : [];
-            document.querySelectorAll('#admin .size-chip').forEach(chip => {
-                if(selectedSizes.includes(chip.dataset.size)) chip.classList.add('active');
-                else chip.classList.remove('active');
-            });
-            if (p.image_url) {
-                document.getElementById('p-preview-img').src = p.image_url;
-                document.getElementById('p-preview-container').classList.remove('hidden');
-                document.getElementById('p-filename').textContent = "CURRENT ASSET VISUAL";
-            }
-            document.getElementById('submit-btn').textContent = 'Commit Changes';
-            document.getElementById('submit-btn').classList.add('bg-zinc-800');
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function resetProductForm() {
-            editingProductId = null;
-            document.getElementById('form-title').textContent = 'Artifact Entry';
-            document.getElementById('edit-indicator').classList.add('hidden');
-            document.querySelectorAll('input:not([type=file]), textarea').forEach(i => i.value = '');
-            document.getElementById('p-img').value = '';
-            document.getElementById('p-preview-container').classList.add('hidden');
-            document.querySelectorAll('#admin .size-chip').forEach(c => c.classList.remove('active'));
-            selectedSizes = [];
-            document.getElementById('submit-btn').textContent = 'Confirm Archive Sync';
-            document.getElementById('submit-btn').classList.remove('bg-zinc-800');
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-            document.getElementById('ai-post-result').classList.add('hidden');
-        }
-
-        // --- Customer Logic ---
-        function viewProductDetail(id) {
-            const p = products.find(x => x.id === id);
-            if(!p) return;
-            currentModalProductId = id;
-            selectedModalSize = null;
-            selectedModalQty = 1;
-
-            document.getElementById('modal-img').src = p.image_url;
-            document.getElementById('modal-name').textContent = p.name;
-            document.getElementById('modal-price').textContent = p.price.toLocaleString();
-            document.getElementById('modal-cat').textContent = p.category;
-            document.getElementById('modal-stock').textContent = p.stock_quantity + ' items';
-            document.getElementById('modal-desc').textContent = p.description || "Specifications unavailable.";
-            document.getElementById('modal-qty').textContent = "1";
-            document.getElementById('modal-size-error').classList.add('hidden');
-            
-            const sizes = p.size ? p.size.split(',') : [];
-            document.getElementById('modal-size-list').innerHTML = sizes.map(s => `
-                <div class="size-chip modal-size-chip border-zinc-200 text-black" data-size="${s.trim()}" onclick="selectModalSize(this)">
-                    ${s.trim()}
-                </div>
-            `).join('');
-            
-            const btn = document.getElementById('modal-add-btn');
-            if(p.stock_quantity <= 0) { btn.disabled = true; btn.textContent = 'ARCHIVED'; } 
-            else { btn.disabled = false; btn.textContent = 'Add To Bag'; }
-            
-            document.getElementById('product-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function selectModalSize(el) {
-            document.querySelectorAll('.modal-size-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedModalSize = el.dataset.size;
-            document.getElementById('modal-size-error').classList.add('hidden');
-        }
-
-        function changeModalQty(val) {
-            const p = products.find(x => x.id === currentModalProductId);
-            if(!p) return;
-            const next = selectedModalQty + val;
-            if (next >= 1 && next <= p.stock_quantity) {
-                selectedModalQty = next;
-                document.getElementById('modal-qty').textContent = selectedModalQty;
-            }
-        }
-
-        function addToCartWithDetails(product) {
-            if (!selectedModalSize) { document.getElementById('modal-size-error').classList.remove('hidden'); return; }
-            const existingIndex = cart.findIndex(item => item.id === product.id && item.size === selectedModalSize);
-            if (existingIndex > -1) {
-                const newQty = cart[existingIndex].quantity + selectedModalQty;
-                cart[existingIndex].quantity = (newQty <= product.stock_quantity) ? newQty : product.stock_quantity;
-            } else {
-                cart.push({
-                    id: product.id, name: product.name, price: product.price,
-                    image: product.image_url, size: selectedModalSize, quantity: selectedModalQty
-                });
-            }
-            document.getElementById('cart-count').textContent = cart.length;
-            closeProductModal();
-            alert(`Archive piece added.`);
-        }
-
-        function closeProductModal() {
-            document.getElementById('product-modal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items-list');
-            const summary = document.getElementById('cart-summary');
-            const emptyMsg = document.getElementById('cart-empty-msg');
-            if (cart.length === 0) { container.innerHTML = ""; summary.classList.add('hidden'); emptyMsg.classList.remove('hidden'); return; }
-            emptyMsg.classList.add('hidden'); summary.classList.remove('hidden');
-            let total = 0;
-            container.innerHTML = cart.map((item, index) => {
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
-                return `
-                    <div class="flex flex-col md:flex-row items-center gap-8 border border-zinc-800 p-8 bg-zinc-900 text-white">
-                        <div class="w-24 h-32 bg-zinc-800 border border-zinc-700 overflow-hidden flex-shrink-0">
-                            <img src="${item.image}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 text-center md:text-left">
-                            <h4 class="text-xl font-black uppercase italic">${item.name}</h4>
-                            <p class="text-[9px] font-black uppercase text-red-600 tracking-widest mt-1">Size: ${item.size}</p>
-                            <div class="text-lg font-bold mt-2">฿${item.price.toLocaleString()}</div>
-                        </div>
-                        <div class="flex items-center gap-6">
-                            <button onclick="updateCartQty(${index}, -1)" class="counter-btn border-zinc-700 hover:border-white">-</button>
-                            <span class="text-lg font-black w-6 text-center">${item.quantity}</span>
-                            <button onclick="updateCartQty(${index}, 1)" class="counter-btn border-zinc-700 hover:border-white">+</button>
-                        </div>
-                        <div class="text-right min-w-[120px]">
-                            <span class="floating-label text-zinc-500">Subtotal</span>
-                            <div class="text-xl font-black text-red-600">฿${subtotal.toLocaleString()}</div>
-                        </div>
-                        <button onclick="removeFromCart(${index})" class="text-zinc-600 hover:text-white transition-colors px-2"><i class="fa-solid fa-xmark text-xl"></i></button>
-                    </div>
-                `;
-            }).join('');
-            document.getElementById('cart-total').textContent = total.toLocaleString();
-        }
-
-        function updateCartQty(index, val) {
-            const item = cart[index];
-            const product = products.find(p => p.id === item.id);
-            if (!product) return;
-            const next = item.quantity + val;
-            if (next >= 1 && next <= product.stock_quantity) { cart[index].quantity = next; renderCart(); }
-        }
-
-        function removeFromCart(index) {
-            if (confirm("REMOVE ARTIFACT?")) { cart.splice(index, 1); document.getElementById('cart-count').textContent = cart.length; renderCart(); }
-        }
-
-        // --- AI Handlers ---
-        async function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value;
-            if(!message) return;
-            const history = document.getElementById('chat-history');
-            history.innerHTML += `<div class="message-user p-5 text-xs max-w-[85%] font-black uppercase tracking-widest leading-relaxed">${message}</div>`;
-            input.value = '';
-            history.scrollTop = history.scrollHeight;
-            if(!currentTicketId) {
-                const loadingId = "ai-" + Date.now();
-                history.innerHTML += `<div id="${loadingId}" class="message-ai p-5 text-xs max-w-[85%] animate-pulse font-black italic">Syncing with AI...</div>`;
-                history.scrollTop = history.scrollHeight;
-                try {
-                    const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message}) });
-                    const data = await res.json();
-                    document.getElementById(loadingId).remove();
-                    history.innerHTML += `<div class="message-ai p-5 text-sm max-w-[85%] leading-relaxed font-bold border border-zinc-700">${data.answer}</div>`;
-                } catch(e) { document.getElementById(loadingId).textContent = "PROTOCOL ERROR."; }
-            } else {
-                await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message, ticket_id: currentTicketId}) });
-            }
-            history.scrollTop = history.scrollHeight;
-        }
-
-        async function requestHuman() {
-            const res = await fetch('/api/support', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: "Staff request protocol."}) });
-            const data = await res.json();
-            currentTicketId = data.ticket_id;
-            document.getElementById('chat-title').innerHTML = `STAFF SESSION #${currentTicketId}`;
-            document.getElementById('human-btn').classList.add('hidden');
-            document.getElementById('exit-human-btn').classList.remove('hidden');
+            const data = await res.json(); currentTicketId = data.ticket_id;
             syncCustomerChat();
         }
 
-        async function exitHumanMode() {
-            if(!confirm("TERMINATE PROTOCOL?")) return;
-            await fetch(`/api/tickets/${currentTicketId}/close`, { method: 'POST' });
-            currentTicketId = null;
-            document.getElementById('chat-title').innerHTML = `SmartStyle AI Protocol`;
-            document.getElementById('human-btn').classList.remove('hidden');
-            document.getElementById('exit-human-btn').classList.add('hidden');
-            loadTickets();
+        async function switchProtocolMode() {
+            if(!currentTicketId) return;
+            const targetMode = currentProtocolMode === 'ai' ? 'human' : 'ai';
+            
+            const res = await fetch(`/api/tickets/${currentTicketId}/switch-mode`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ mode: targetMode })
+            });
+            
+            if(res.ok) {
+                currentProtocolMode = targetMode;
+                updateChatHeaderUI(targetMode);
+                syncCustomerChat();
+            }
+        }
+
+        function updateChatHeaderUI(mode) {
+            document.getElementById('chat-status-label').textContent = `Protocol: ${mode.toUpperCase()} CHANNEL`;
+            document.getElementById('chat-mode-indicator').textContent = `MODE: ${mode === 'ai' ? 'AI CURATOR' : 'STAFF ASSIST'}`;
+            document.getElementById('switch-mode-btn').textContent = mode === 'ai' ? 'Switch to Human' : 'Return to AI';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input'); const msg = input.value; if(!msg || !currentTicketId) return;
+            const history = document.getElementById('chat-history');
+            
+            // แสดงข้อความ User ทันทีบน UI
+            history.innerHTML += `<div class="message-user p-5 text-xs max-w-[85%] font-black uppercase mb-2 shadow-sm">${msg}</div>`;
+            input.value = ''; history.scrollTop = history.scrollHeight;
+            
+            if(currentProtocolMode === 'ai') {
+                isWaitingAI = true;
+                const loadingId = "load-" + Date.now();
+                history.innerHTML += `<div id="${loadingId}" class="message-ai p-5 text-xs max-w-[85%] font-black uppercase italic ai-loading mb-2 border border-zinc-800">Stylist is thinking...</div>`;
+                history.scrollTop = history.scrollHeight;
+            }
+
+            try {
+                await fetch('/api/chat', { 
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({message: msg, ticket_id: currentTicketId}) 
+                });
+                isWaitingAI = false;
+                syncCustomerChat();
+            } catch(e) { isWaitingAI = false; }
         }
 
         async function syncCustomerChat() {
             if(!currentTicketId) return;
             const res = await fetch(`/api/tickets/${currentTicketId}`);
             if(!res.ok) return;
-            const ticket = await res.json();
-            renderChat(document.getElementById('chat-history'), JSON.parse(ticket.chat_history || "[]"));
+            const t = await res.json();
+            const history = JSON.parse(t.chat_history || "[]");
+            
+            // ซิงค์โหมดจากเซิร์ฟเวอร์ด้วย เผื่อแอดมินสลับโหมดจากหลังบ้าน
+            const serverMode = (t.ai_category === 'HUMAN_REQUIRED') ? 'human' : 'ai';
+            if(currentProtocolMode !== serverMode) {
+                currentProtocolMode = serverMode;
+                updateChatHeaderUI(serverMode);
+            }
+
+            renderChatUI(document.getElementById('chat-history'), history);
+        }
+
+        // ฟังก์ชันช่วยตรวจจับสินค้าในข้อความเพื่อสร้าง Smart Link
+        function detectProductsInText(text) {
+            if (!text) return [];
+            let found = [];
+            const lowerText = text.toLowerCase();
+            products.forEach(p => {
+                if (lowerText.includes(p.name.toLowerCase())) {
+                    found.push(p);
+                }
+            });
+            // กรองสินค้าที่ซ้ำ
+            return [...new Map(found.map(item => [item.id, item])).values()];
+        }
+
+        function renderChatUI(container, history, isAdmin = false) {
+            const currentHTML = container.innerHTML;
+            const newHTML = history.map(m => {
+                let cls = "message-ai";
+                if(m.role === 'user') cls = isAdmin ? "message-ai" : "message-user";
+                if(m.role === 'admin') cls = isAdmin ? "message-user" : "message-admin";
+                if(m.role === 'ai') cls = "message-ai shadow-md";
+                if(m.role === 'system') return `<div class="message-system border border-zinc-800 py-2 uppercase font-black mb-4">${m.content}</div>`;
+                
+                // ตรวจหา Smart Product Link สำหรับข้อความจากระบบ/แอดมิน
+                let smartLinks = '';
+                if (!isAdmin && (m.role === 'ai' || m.role === 'admin')) {
+                    const matched = detectProductsInText(m.content);
+                    if (matched.length > 0) {
+                        smartLinks = `
+                            <div class="mt-4 flex flex-col gap-2 border-t border-zinc-800 pt-3">
+                                <p class="text-[8px] font-black uppercase text-zinc-500 tracking-tighter italic">Found In Archive:</p>
+                                ${matched.map(p => `
+                                    <div onclick="viewProductDetail(${p.id})" class="chat-product-link flex items-center gap-3 p-2 cursor-pointer border border-zinc-700">
+                                        <img src="${p.image_url}" class="w-10 h-10 object-cover border border-zinc-700" onerror="this.src='https://placehold.co/100x100?text=Item'">
+                                        <div class="flex-1 overflow-hidden">
+                                            <p class="text-[10px] font-black uppercase truncate">${p.name}</p>
+                                            <p class="text-[9px] text-red-600 font-black">฿${p.price.toLocaleString()}</p>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-[10px] text-zinc-500 pr-2"></i>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                    <div class="${cls} p-5 text-xs max-w-[85%] font-black uppercase leading-relaxed mb-2 shadow-md">
+                        ${m.content}
+                        ${smartLinks}
+                    </div>
+                `;
+            }).join('');
+            
+            // หากกำลังรอ AI (isWaitingAI) เราจะไม่เขียนทับ UI ด้วยประวัติแชทเก่าจากโพลล์ เพื่อไม่ให้ Loading หายไป
+            if(!isWaitingAI && currentHTML !== newHTML) {
+                container.innerHTML = newHTML;
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // --- ADMIN & PRODUCT LOGIC ---
+        async function loadTickets() {
+            const res = await fetch('/api/tickets'); const tickets = await res.json();
+            const list = document.getElementById('ticket-list');
+            list.innerHTML = tickets.map(t => `
+                <div onclick="openAdminChat(${t.id})" class="p-4 border border-zinc-800 cursor-pointer relative group ${adminActiveTicketId == t.id ? 'bg-red-600 text-white shadow-xl border-red-600' : 'bg-transparent text-zinc-500 hover:bg-zinc-900'}">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[8px] font-black uppercase tracking-widest">#${t.id} / ${t.status}</span>
+                        <div class="flex gap-2 items-center">
+                            ${t.ai_category === 'HUMAN_REQUIRED' ? '<span class="bg-black text-white px-1 text-[7px] font-black border border-red-500">LIVE</span>' : ''}
+                            <button onclick="event.stopPropagation(); deleteTicket(${t.id})" class="text-zinc-600 hover:text-white transition-opacity"><i class="fa-solid fa-trash-can text-[9px]"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] font-bold truncate">${t.message}</p>
+                </div>
+            `).join('') || '<p class="text-zinc-800 uppercase font-black py-10 text-center text-[10px]">Inbox Empty</p>';
+        }
+
+        async function deleteTicket(id) {
+            if(!confirm(`ERASE ARCHIVE LOG #${id}?`)) return;
+            await fetch(`/api/tickets/${id}`, { method: 'DELETE' });
+            if (adminActiveTicketId == id) {
+                adminActiveTicketId = null;
+                document.getElementById('admin-chat-footer').classList.add('hidden');
+                document.getElementById('admin-chat-history').innerHTML = '';
+                document.getElementById('admin-chat-header').textContent = 'Select Case Log';
+            }
+            loadTickets();
         }
 
         async function openAdminChat(id) {
-            adminActiveTicketId = id;
-            document.getElementById('admin-chat-footer').classList.remove('hidden');
-            document.getElementById('admin-chat-header').innerHTML = `<span>Session #${id}</span> <span class="text-red-600 animate-pulse font-black uppercase">● Protocol Active</span>`;
-            syncAdminChat();
+            adminActiveTicketId = id; document.getElementById('admin-chat-footer').classList.remove('hidden');
+            document.getElementById('admin-chat-header').innerHTML = `PROTOCOL LOG #${id}`; syncAdminChat();
         }
 
         async function syncAdminChat() {
             if(!adminActiveTicketId) return;
-            const res = await fetch(`/api/tickets/${adminActiveTicketId}`);
-            if(!res.ok) return closeAdminChat();
-            const ticket = await res.json();
-            renderChat(document.getElementById('admin-chat-history'), JSON.parse(ticket.chat_history || "[]"), true);
+            const res = await fetch(`/api/tickets/${adminActiveTicketId}`); if(!res.ok) return;
+            const t = await res.json(); renderChatUI(document.getElementById('admin-chat-history'), JSON.parse(t.chat_history || "[]"), true);
         }
 
         async function sendAdminReply() {
-            const input = document.getElementById('admin-reply-input');
-            const message = input.value;
-            if(!message) return;
-            await fetch('/api/admin/reply', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ticket_id: adminActiveTicketId, message}) });
-            input.value = '';
-            syncAdminChat();
+            const input = document.getElementById('admin-reply-input'); const msg = input.value; if(!msg) return;
+            await fetch('/api/admin/reply', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ticket_id: adminActiveTicketId, message: msg}) });
+            input.value = ''; syncAdminChat();
         }
 
-        function renderChat(container, history, isAdmin = false) {
-            const newHTML = history.map(m => {
-                if (m.role === 'system') return `<div class="message-system my-4 border-y border-zinc-800 py-2 italic font-bold">LOG: ${m.content}</div>`;
-                if (m.role === 'user') return `<div class="${isAdmin ? 'message-ai p-4 border border-zinc-700 bg-black text-zinc-400' : 'message-user p-4'} text-[11px] max-w-[85%] uppercase font-black">${m.content}</div>`;
-                if (m.role === 'admin') return `<div class="${isAdmin ? 'message-user p-4' : 'message-ai p-4 border border-zinc-700 bg-black text-zinc-400'} text-[11px] max-w-[85%] uppercase font-black">${m.content}</div>`;
-                return '';
-            }).join('');
-            if (container.innerHTML !== newHTML) { container.innerHTML = newHTML; container.scrollTop = container.scrollHeight; }
+        async function loadProducts() {
+            const res = await fetch('/api/products'); products = await res.json();
+            generateCategoryButtons(); renderFilteredProducts(); renderAdminProducts();
         }
 
-        async function askAIForPost() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const category = document.getElementById('p-cat').value;
-            if(!name || !price) return alert("ARCHIVE DATA MISSING.");
-            const resDiv = document.getElementById('ai-post-result');
-            const resText = document.getElementById('ai-text');
-            resDiv.classList.remove('hidden');
-            resText.value = "PROTOCOL: DRAFTING CONTENT...";
-            const res = await fetch('/api/ai/generate-post', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, price, category, size: selectedSizes.join(', ')}) });
-            const data = await res.json();
-            resText.value = data.content;
+        function generateCategoryButtons() {
+            const container = document.getElementById('category-filter-list');
+            container.innerHTML = `<button onclick="filterProducts('all')" class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" id="btn-filter-all">All Items</button>`;
+            [...new Set(products.map(p => p.category))].forEach(cat => {
+                if(!cat) return;
+                const btn = document.createElement('button'); btn.className = `filter-btn ${currentFilter === cat ? 'active' : ''}`;
+                btn.textContent = cat; btn.onclick = () => filterProducts(cat); container.appendChild(btn);
+            });
+        }
+
+        function filterProducts(cat) { currentFilter = cat; renderFilteredProducts(); generateCategoryButtons(); }
+
+        function renderFilteredProducts() {
+            document.getElementById('product-list').innerHTML = products.filter(p => currentFilter === 'all' || p.category.toLowerCase() === currentFilter.toLowerCase()).map(p => `
+                <div onclick="viewProductDetail(${p.id})" class="product-card group cursor-pointer animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div class="relative overflow-hidden aspect-[3/4] bg-zinc-900 mb-4 border border-zinc-800">
+                        <img src="${p.image_url}" class="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700" onerror="this.src='https://placehold.co/400x533?text=Archive'">
+                        ${p.stock_quantity <= 0 ? '<div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] font-black px-3 py-1 uppercase tracking-tighter">SOLD OUT</div>' : ''}
+                    </div>
+                    <h4 class="font-black text-[11px] uppercase truncate text-white tracking-widest">${p.name}</h4>
+                    <span class="text-xs font-black text-red-600">฿${p.price.toLocaleString()}</span>
+                    <div class="flex flex-wrap gap-1 mt-2 opacity-50">
+                        ${(p.size || '').split(',').map(s => `<span class="text-[7px] border border-zinc-800 px-1 font-black text-zinc-400 uppercase">${s.trim()}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('') || '<p class="text-zinc-600 uppercase text-center col-span-full py-20 font-black">Archive Empty</p>';
+        }
+
+        function renderAdminProducts() {
+            document.getElementById('admin-product-list').innerHTML = products.map(p => `
+                <div class="p-4 border border-zinc-800 bg-black text-white hover:border-zinc-500 transition group shadow-2xl">
+                    <div class="flex justify-between items-center">
+                        <div class="space-y-1">
+                            <h5 class="text-[10px] font-black uppercase tracking-tight">${p.name}</h5>
+                            <p class="text-[8px] text-zinc-500 uppercase font-bold">Qty: <span class="${p.stock_quantity < 5 ? 'text-red-600' : 'text-zinc-300'} font-black">${p.stock_quantity}</span> | ฿${p.price}</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="startEdit(${p.id})" class="text-[9px] font-black uppercase text-red-600 border-b border-red-600 hover:text-white transition-colors">Modify</button>
+                            <button onclick="deleteProduct(${p.id})" class="text-[9px] font-black uppercase text-zinc-600 hover:text-red-600 transition-colors">Del</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-center text-zinc-800 uppercase font-black py-10 text-[10px]">No Artifacts</p>';
+        }
+
+        async function addProduct() {
+            const f = new FormData();
+            f.append('name', document.getElementById('p-name').value);
+            f.append('price', document.getElementById('p-price').value);
+            f.append('category', document.getElementById('p-cat').value);
+            f.append('stock_quantity', document.getElementById('p-stock').value);
+            f.append('style_tags', document.getElementById('p-tags').value);
+            f.append('occasion', document.getElementById('p-occasion').value);
+            f.append('description', document.getElementById('p-desc').value);
+            f.append('size', selectedSizes.join(', '));
+            const img = document.getElementById('p-img').files[0]; if(img) f.append('image', img);
+            const url = editingProductId ? `/api/products/${editingProductId}/edit` : '/api/products';
+            const res = await fetch(url, { method: 'POST', body: f });
+            if(res.ok) { resetProductForm(); loadProducts(); alert("Selected Archive Sync Successful."); }
+        }
+
+        function startEdit(id) {
+            const p = products.find(x => x.id === id); if(!p) return;
+            editingProductId = id;
+            document.getElementById('form-title').textContent = 'Modify Selected Artifact';
+            document.getElementById('edit-indicator').classList.remove('hidden');
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-cat').value = p.category;
+            document.getElementById('p-stock').value = p.stock_quantity;
+            document.getElementById('p-tags').value = p.style_tags || '';
+            document.getElementById('p-occasion').value = p.occasion || '';
+            document.getElementById('p-desc').value = p.description;
+            selectedSizes = p.size ? p.size.split(',').map(s => s.trim()) : [];
+            document.querySelectorAll('#admin .size-chip').forEach(c => {
+                if(selectedSizes.includes(c.dataset.size)) c.classList.add('active'); 
+                else c.classList.remove('active');
+            });
+            if (p.image_url) {
+                document.getElementById('p-preview-img').src = p.image_url;
+                document.getElementById('p-preview-container').classList.remove('hidden');
+            }
+            document.getElementById('submit-btn').textContent = 'Commit Update';
+            document.getElementById('admin-product-form').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function deleteProduct(id) {
-            if(!confirm("ERASE?")) return;
-            await fetch(`/api/products/${id}`, {method: 'DELETE'});
+            if(!confirm("ERASE PRODUCT PERMANENTLY?")) return;
+            await fetch(`/api/products/${id}`, { method: 'DELETE' });
             loadProducts();
         }
 
-        function copyAIText() { document.getElementById('ai-text').select(); document.execCommand('copy'); alert('COPIED.'); }
-        function useAsDescription() { document.getElementById('p-desc').value = document.getElementById('ai-text').value; }
+        async function askAIForPost() {
+            const n = document.getElementById('p-name').value;
+            if(!n) return alert("Title required for AI Protocol.");
+            document.getElementById('ai-post-result').classList.remove('hidden');
+            document.getElementById('ai-text').value = "AI Protocol: Drafting High-Contrast Content...";
+            const res = await fetch('/api/ai/generate-post', { 
+                method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({
+                    name: n, price: document.getElementById('p-price').value, category: document.getElementById('p-cat').value,
+                    style_tags: document.getElementById('p-tags').value, occasion: document.getElementById('p-occasion').value
+                }) 
+            });
+            const d = await res.json(); document.getElementById('ai-text').value = d.content;
+        }
+
+        function toggleSizeChip(el) {
+            const s = el.dataset.size;
+            if (selectedSizes.includes(s)) selectedSizes = selectedSizes.filter(x => x !== s); else selectedSizes.push(s);
+            el.classList.toggle('active');
+        }
+
+        function handleImagePreview(i) {
+            if (i.files && i.files[0]) {
+                const r = new FileReader(); r.onload = (e) => { 
+                    document.getElementById('p-preview-img').src = e.target.result; 
+                    document.getElementById('p-preview-container').classList.remove('hidden'); 
+                }; r.readAsDataURL(i.files[0]);
+            }
+        }
+
+        function resetProductForm() { editingProductId = null; document.getElementById('form-title').textContent = 'Artifact Entry'; document.getElementById('edit-indicator').classList.add('hidden'); document.querySelectorAll('#admin input:not([type=file]), #admin textarea').forEach(i => i.value = ''); document.getElementById('p-preview-container').classList.add('hidden'); document.getElementById('submit-btn').textContent = 'Confirm Archive Entry'; document.getElementById('cancel-edit-btn').classList.add('hidden'); loadProducts(); }
+
+        function viewProductDetail(id) {
+            const p = products.find(x => x.id === id); if(!p) return;
+            currentModalProductId = id; selectedModalSize = null; selectedModalQty = 1;
+            document.getElementById('modal-img').src = p.image_url; document.getElementById('modal-name').textContent = p.name;
+            document.getElementById('modal-price').textContent = p.price.toLocaleString(); document.getElementById('modal-stock').textContent = p.stock_quantity;
+            document.getElementById('modal-desc').textContent = p.description || "Specifications available in archive.";
+            document.getElementById('modal-qty').textContent = "1";
+            document.getElementById('modal-size-error').classList.add('hidden');
+            const sizes = p.size ? p.size.split(',') : [];
+            document.getElementById('modal-size-list').innerHTML = sizes.map(s => `<div class="size-chip modal-size-chip text-black border-zinc-200" data-size="${s.trim()}" onclick="selectModalSize(this)">${s.trim()}</div>`).join('');
+            document.getElementById('product-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+        }
+
+        function selectModalSize(el) { document.querySelectorAll('.modal-size-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); selectedModalSize = el.dataset.size; document.getElementById('modal-size-error').classList.add('hidden'); }
+        function changeModalQty(v) { selectedModalQty = Math.max(1, selectedModalQty + v); document.getElementById('modal-qty').textContent = selectedModalQty; }
+        function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+
+        function renderCart() {
+            const c = document.getElementById('cart-items-list'); if (cart.length === 0) { c.innerHTML = "<p class='text-zinc-700 font-black uppercase text-center py-20 tracking-widest'>Bag Empty.</p>"; document.getElementById('cart-summary').classList.add('hidden'); return; }
+            document.getElementById('cart-summary').classList.remove('hidden');
+            let t = 0;
+            c.innerHTML = cart.map((item, index) => { 
+                t += item.price * item.quantity; 
+                return `<div class="flex items-center gap-8 border border-zinc-800 p-8 bg-zinc-900 text-white shadow-2xl animate-in fade-in duration-500"><img src="${item.image}" class="w-20 h-28 object-cover border border-zinc-800"><div class="flex-1 italic font-black uppercase text-xl">${item.name} <span class="text-red-600 block text-[10px] mt-1 tracking-widest">SIZE: ${item.size} / QTY: ${item.quantity}</span></div><div class="text-red-600 font-black">฿${(item.price * item.quantity).toLocaleString()}</div><button onclick="removeFromCart(${index})" class="text-zinc-600 hover:text-white transition-all"><i class="fa-solid fa-xmark text-xl"></i></button></div>`; 
+            }).join('');
+            document.getElementById('cart-total').textContent = t.toLocaleString();
+        }
+
+        function removeFromCart(index) { cart.splice(index, 1); document.getElementById('cart-count').textContent = cart.length; renderCart(); }
+
+        function resetSessionUI() { if(confirm("CLEAR SESSION?")) { currentTicketId = null; document.getElementById('stylist-section').classList.add('hidden'); document.getElementById('chat-history').innerHTML = ''; } }
 
         init();
         document.getElementById('chat-input').addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
         document.getElementById('admin-reply-input').addEventListener('keypress', (e) => e.key === 'Enter' && sendAdminReply());
-        document.getElementById('modal-add-btn').addEventListener('click', () => addToCartWithDetails(products.find(p => p.id === currentModalProductId)));
-        window.onclick = function(event) { if (event.target == document.getElementById('product-modal')) closeProductModal(); }
+        document.getElementById('modal-add-btn').addEventListener('click', () => {
+            const p = products.find(x => x.id === currentModalProductId); if(!selectedModalSize) { document.getElementById('modal-size-error').classList.remove('hidden'); return; }
+            cart.push({ id: p.id, name: p.name, price: p.price, image: p.image_url, size: selectedModalSize, quantity: selectedModalQty });
+            document.getElementById('cart-count').textContent = cart.length; closeProductModal(); alert("Bagged.");
+        });
+        window.onclick = (e) => { if(e.target == document.getElementById('product-modal')) closeProductModal(); }
     </script>
 </body>
 </html>
