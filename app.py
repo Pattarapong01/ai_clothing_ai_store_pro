@@ -85,7 +85,7 @@ def call_stylist_ai(prompt, context_products, chat_history_list, user_profile):
     except Exception as e:
         return f"ขออภัยครับ ระบบขัดข้อง: {str(e)}"
 
-# --- API Routes ---
+# --- Routes ---
 
 @app.route('/')
 def home():
@@ -150,6 +150,7 @@ def edit_product(id):
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+# ฟังก์ชันจัดการสินค้า (ลบสินค้า)
 @app.route('/api/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
     try:
@@ -255,6 +256,50 @@ def switch_ticket_mode(id):
     conn.close()
     return jsonify({"error": "Ticket session not found"}), 404
 
+    # 2. โหมด AI (ดึง Context สินค้า)
+    prods = conn.execute("SELECT name, price, category, style_tags, occasion FROM products WHERE stock_quantity > 0").fetchall()
+    context_products = json.dumps([dict(p) for p in prods])
+    
+    history_str = "[]"
+    profile_str = "{}"
+    if ticket_id:
+        row = conn.execute("SELECT chat_history, user_profile FROM tickets WHERE id = ?", (ticket_id,)).fetchone()
+        if row:
+            history_str = row['chat_history'] or "[]"
+            profile_str = row['user_profile'] or "{}"
+
+    # เรียก AI
+    ai_answer = call_stylist_ai(user_msg, context_products, history_str, profile_str)
+    
+    # บันทึกประวัติ
+    if ticket_id:
+        current_history = json.loads(history_str)
+        current_history.append({"role": "user", "content": user_msg})
+        current_history.append({"role": "ai", "content": ai_answer})
+        conn.execute("UPDATE tickets SET chat_history = ? WHERE id = ?", (json.dumps(current_history), ticket_id))
+        conn.commit()
+    
+    conn.close()
+    return jsonify({"answer": ai_answer})
+
+# สร้าง Session/Ticket
+@app.route('/api/support', methods=['POST'])
+def create_session():
+    data = request.json
+    msg = data.get('message', 'User started session')
+    # กำหนดหมวดหมู่เป็น HUMAN_REQUIRED หากต้องการติดต่อพนักงานทันที
+    category = "HUMAN_REQUIRED" if "พนักงาน" in msg or "staff" in msg.lower() else "STYLIST_SESSION"
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO tickets (message, ai_category, chat_history, status, user_profile) VALUES (?, ?, ?, ?, ?)",
+                 (msg, category, "[]", "OPEN", "{}"))
+    new_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "success", "ticket_id": new_id})
+
+# ดึงรายการ Ticket ทั้งหมด
 @app.route('/api/tickets', methods=['GET'])
 def get_tickets():
     conn = get_db_connection()
@@ -301,6 +346,21 @@ def admin_reply():
 
 # --- AI Utilities (Draft Post) ---
 
+# ฟังก์ชัน Admin ตอบกลับ
+@app.route('/api/admin/reply', methods=['POST'])
+def admin_reply():
+    data = request.json
+    conn = get_db_connection()
+    row = conn.execute("SELECT chat_history FROM tickets WHERE id = ?", (data.get('ticket_id'),)).fetchone()
+    if row:
+        history = json.loads(row['chat_history'] or "[]")
+        history.append({"role": "admin", "content": data.get('message')})
+        conn.execute("UPDATE tickets SET chat_history = ? WHERE id = ?", (json.dumps(history), data.get('ticket_id')))
+        conn.commit()
+    conn.close()
+    return jsonify({"status": "success"})
+
+# ฟังก์ชัน AI ร่างโพสต์ขายของ (Draft Post)
 @app.route('/api/ai/generate-post', methods=['POST'])
 def ai_generate_post():
     try:
