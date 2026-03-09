@@ -59,7 +59,7 @@
         .filter-btn.active { background-color: var(--accent-red); border-color: var(--accent-red); color: #fff; }
 
         /* Counter */
-        .counter-btn { width: 32px; height: 32px; border: 1px solid #1a1a1a; display: flex; items-center; justify-content: center; font-weight: 900; color: #000; }
+        .counter-btn { width: 32px; height: 32px; border: 1px solid #000; display: flex; items-center; justify-content: center; font-weight: 900; }
         .counter-btn:hover { background: #000; color: #fff; }
     </style>
 </head>
@@ -112,7 +112,7 @@
 
             <section id="assistant-section" class="border-t border-zinc-800 pt-32 max-w-4xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-5xl font-black uppercase italic tracking-tighter text-white">Smart <span class="text-red-600">Support</span></h2>
+                    <h2 class="text-5xl font-black uppercase italic tracking-tighter">Smart <span class="text-red-600">Support</span></h2>
                     <p class="text-[10px] uppercase tracking-[0.5em] text-zinc-500 mt-2 font-bold">Protocol established via Llama3</p>
                 </div>
                 <div class="bg-zinc-900 border border-zinc-800 p-8 shadow-2xl">
@@ -140,7 +140,7 @@
 
         <!-- PRODUCTS VIEW -->
         <div id="products" class="tab-content space-y-16">
-            <div class="text-center space-y-6 text-white">
+            <div class="text-center space-y-6">
                 <h2 class="text-6xl font-black uppercase tracking-tighter">Latest <span class="text-red-600">Drops</span></h2>
                 <p class="text-zinc-500 uppercase tracking-widest text-[10px] font-bold">Curated artifacts to elevate your urban identity.</p>
                 
@@ -156,7 +156,7 @@
         <!-- CART VIEW -->
         <div id="cart" class="tab-content max-w-4xl mx-auto py-12 space-y-12">
             <div class="text-center">
-                <h2 class="text-5xl font-black tracking-tighter uppercase italic text-white">Current Bag</h2>
+                <h2 class="text-5xl font-black tracking-tighter uppercase italic">Current Bag</h2>
                 <p id="cart-empty-msg" class="text-zinc-600 uppercase tracking-widest text-[10px] mt-4 hidden">Bag empty. Discover something new.</p>
             </div>
             <div id="cart-items-list" class="space-y-4"></div>
@@ -171,9 +171,9 @@
 
         <!-- ADMIN VIEW (Secret Path #/admin) -->
         <div id="admin" class="tab-content space-y-16">
-            <div class="flex justify-between items-center border-b border-zinc-800 pb-8 text-white">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-8">
                 <div class="flex items-center gap-4">
-                    <h2 class="text-3xl font-black uppercase tracking-tighter">Console</h2>
+                    <h2 class="text-3xl font-black uppercase tracking-tighter text-white">Console</h2>
                     <span class="status-badge">AUTHORIZED STAFF ONLY</span>
                 </div>
                 <button onclick="loadProducts()" class="bg-zinc-900 border border-zinc-800 text-white px-4 py-2 text-[10px] font-black uppercase hover:border-red-600"><i class="fa-solid fa-sync mr-2"></i> Sync Cloud</button>
@@ -201,12 +201,12 @@
                     </div>
 
                     <div class="border border-zinc-800 p-10 space-y-8 bg-zinc-900">
-                        <div class="flex justify-between items-center border-b border-zinc-800 pb-4 text-white">
+                        <div class="flex justify-between items-center border-b border-zinc-800 pb-4">
                             <h4 id="form-title" class="text-2xl font-black uppercase italic">Artifact Entry</h4>
                             <span id="edit-indicator" class="hidden bg-red-600 text-white text-[8px] font-black px-2 py-1 uppercase">Modify Protocol</span>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-1">
                                 <label class="floating-label">Item Name</label>
                                 <input id="p-name" type="text" class="w-full bg-transparent border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
@@ -235,11 +235,10 @@
                             </div>
                             <div class="space-y-1">
                                 <label class="floating-label">Asset Category</label>
-                                <select id="p-cat" class="w-full bg-zinc-900 border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white cursor-pointer">
+                                <select id="p-cat" class="w-full bg-zinc-900 border-b border-zinc-700 py-2 outline-none font-bold text-sm text-white">
                                     <option value="T-Shirt">T-Shirt</option>
                                     <option value="Hoodie">Hoodie</option>
                                     <option value="Jacket">Jacket</option>
-                                    <option value="Pants">Pants</option>
                                     <option value="Sport">Sport</option>
                                 </select>
                             </div>
@@ -265,7 +264,7 @@
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-4 pt-4 text-white">
+                        <div class="flex flex-col gap-4 pt-4">
                             <button id="submit-btn" onclick="addProduct()" class="btn-red w-full py-5">Confirm Archive Sync</button>
                             <button id="cancel-edit-btn" onclick="resetProductForm()" class="hidden text-[10px] font-black uppercase text-zinc-500 hover:text-white self-center">Cancel Modify</button>
                             <button onclick="askAIForPost()" class="btn-ai-action mt-4 self-end"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Draft Content</button>
@@ -283,8 +282,8 @@
                 </div>
 
                 <div class="lg:col-span-3 space-y-6">
-                    <h3 class="floating-label text-white">Database</h3>
-                    <div id="admin-product-list" class="space-y-2 max-h-[800px] overflow-y-auto pr-2 text-white"></div>
+                    <h3 class="floating-label">Database</h3>
+                    <div id="admin-product-list" class="space-y-2 max-h-[800px] overflow-y-auto pr-2"></div>
                 </div>
             </div>
         </div>
@@ -477,7 +476,7 @@
                     </div>
                     <div class="space-y-1">
                         <h4 class="font-black text-sm uppercase tracking-tight truncate text-white">${p.name}</h4>
-                        <div class="flex justify-between items-baseline text-white">
+                        <div class="flex justify-between items-baseline">
                             <span class="text-sm font-black text-red-600">฿${p.price.toLocaleString()}</span>
                         </div>
                         <div class="flex flex-wrap gap-1 pt-2 opacity-50">
@@ -728,7 +727,7 @@
                             <button onclick="updateCartQty(${index}, 1)" class="counter-btn border-zinc-700 hover:border-white">+</button>
                         </div>
                         <div class="text-right min-w-[120px]">
-                            <span class="floating-label text-zinc-500">Subtotal</span>
+                            <span class="floating-label">Subtotal</span>
                             <div class="text-xl font-black text-red-600">฿${subtotal.toLocaleString()}</div>
                         </div>
                         <button onclick="removeFromCart(${index})" class="text-zinc-600 hover:text-white transition-colors px-2"><i class="fa-solid fa-xmark text-xl"></i></button>
